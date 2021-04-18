@@ -47,7 +47,7 @@ class UpdateFragment : Fragment() {
             .setText(args.currentReminder.reminderText)
 
         //Format Date
-        val sdf = SimpleDateFormat("MM/dd/yyyy")
+        val sdf = SimpleDateFormat("dd MMM yy (EEEE)")
         val netDate = Date(args.currentReminder.dueDate.time)
         val formattedDueDate = sdf.format(netDate)
 

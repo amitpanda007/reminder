@@ -40,7 +40,7 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         val currentReminder = reminderList[position]
 
         //Format Date
-        val sdf = SimpleDateFormat("MM/dd/yyyy")
+        val sdf = SimpleDateFormat("dd MMM yy (EEEE)")
         val netDate = Date(currentReminder.dueDate.time)
         val dueDate = sdf.format(netDate)
 
