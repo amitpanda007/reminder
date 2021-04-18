@@ -1,7 +1,7 @@
 package com.pandacorp.reminders.ui.util
 
 import androidx.room.TypeConverter
-import com.pandacorp.reminders.data.Priority
+import com.pandacorp.reminders.model.Priority
 import java.util.Date
 
 class Converters {

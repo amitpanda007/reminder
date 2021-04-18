@@ -16,11 +16,26 @@
     </fragment>
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.pandacorp.remind.ui.main.ListFragment"
+        android:name="com.pandacorp.reminders.ui.main.ListFragment"
         android:label="Reminders"
         tools:layout="@layout/fragment_list" >
         <action
             android:id="@+id/action_listFragment_to_addFragment"
             app:destination="@id/addFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_updateFragment"
+            app:destination="@id/updateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateFragment"
+        android:name="com.pandacorp.reminders.ui.main.UpdateFragment"
+        android:label="Update"
+        tools:layout="@layout/fragment_update" >
+        <argument
+            android:name="currentReminder"
+            app:argType="com.pandacorp.reminders.data.Reminder" />
+        <action
+            android:id="@+id/action_updateFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
 </navigation>

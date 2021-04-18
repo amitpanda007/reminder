@@ -1,10 +1,7 @@
 package com.pandacorp.reminders.data
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ReminderDao {
@@ -18,9 +15,15 @@ interface ReminderDao {
     @Insert
     suspend fun insertReminders(reminders: List<Reminder>)
 
+    @Update
+    suspend fun updateReminder(reminder: Reminder)
+
+    @Delete
+    suspend fun deleteReminder(reminder: Reminder)
+
     @Query("DELETE FROM reminder_table")
     suspend fun deleteAll()
 
-    @Query("DELETE FROM reminder_table WHERE id=:id")
-    suspend fun deleteReminder(id: Long)
+    @Query("DELETE FROM sqlite_sequence WHERE name= 'reminder_table'")
+    suspend fun deleteSequence()
 }

@@ -11,21 +11,24 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
-import com.pandacorp.reminders.data.Priority
+import com.pandacorp.reminders.model.Priority
 import com.pandacorp.reminders.data.Reminder
-import com.pandacorp.reminders.ui.shared.SharedViewModel
-import java.util.*
+import com.pandacorp.reminders.viewmodel.SharedViewModel
+import java.util.Calendar
+import java.util.Date
 
 class AddFragment : Fragment() {
 
     private lateinit var mSharedViewModel: SharedViewModel
     private var dueDate: Long = 0
-
+    private var chipId: Int = -1
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,15 +42,24 @@ class AddFragment : Fragment() {
         }
 
         // Date button selection
-        view.findViewById<ImageButton>(R.id.dateBtn).setOnClickListener {
+        view.findViewById<TextInputLayout>(R.id.textInputLayoutDueDate).setEndIconOnClickListener {
             Log.i(LOG_TAG, "Date Picker Clicked")
             openDatePicker()
         }
 
         // Time picker button selection
-        view.findViewById<ImageButton>(R.id.timeBtn).setOnClickListener {
+        view.findViewById<TextInputLayout>(R.id.textInputLayoutDueTime).setEndIconOnClickListener {
             Log.i(LOG_TAG, "Time Picker Clicked")
             openTimePicker()
+        }
+
+        // Priority Selection Chip
+        view.findViewById<ChipGroup>(R.id.chipGroup).setOnCheckedChangeListener { group, checkedId ->
+            // The same checked chip
+            if (checkedId == -1) {
+                return@setOnCheckedChangeListener
+            }
+            chipId = checkedId
         }
 
         return view
@@ -89,21 +101,19 @@ class AddFragment : Fragment() {
     }
 
     private fun insertReminderToDB() {
-        var priority: Priority = Priority.HIGH
+        var priority: Priority = Priority.NONE
         val reminderText = view?.findViewById<TextView>(R.id.reminderText)?.text.toString()
         val reminderTime = view?.findViewById<TextView>(R.id.timePickerText)?.text.toString()
 
-        val priorityGroup = view?.findViewById<RadioGroup>(R.id.radioGroup)
-        if (priorityGroup != null) {
-            when (priorityGroup.checkedRadioButtonId) {
-                R.id.high -> priority = Priority.HIGH
-                R.id.medium -> priority = Priority.MEDIUM
-                R.id.low -> priority = Priority.LOW
-                else -> { // Note the block
-                    print("Select a Priority")
-                }
+        when (chipId) {
+            R.id.high -> priority = Priority.HIGH
+            R.id.medium -> priority = Priority.MEDIUM
+            R.id.low -> priority = Priority.LOW
+            else -> { // Note the block
+                print("Select a Priority")
             }
         }
+
 
         if (inputCheck(reminderText)) {
 
@@ -111,8 +121,9 @@ class AddFragment : Fragment() {
                 0, reminderText, priority, Date(dueDate),
                 reminderTime, Calendar.getInstance().time, false
             )
+            Log.i(LOG_TAG, reminder.toString())
             mSharedViewModel.addReminder(reminder)
-            Toast.makeText(requireContext(), "Successfully added!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "New Reminder added!", Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.action_addFragment_to_listFragment)
         } else {
             Toast.makeText(requireContext(), "Please provide a proper Reminder", Toast.LENGTH_LONG)

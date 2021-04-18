@@ -1,10 +1,10 @@
-package com.pandacorp.remind.ui.main
+package com.pandacorp.reminders.ui.main
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pandacorp.reminders.R
 import com.pandacorp.reminders.ui.main.ListAdaptor
-import com.pandacorp.reminders.ui.shared.SharedViewModel
+import com.pandacorp.reminders.viewmodel.SharedViewModel
 
 class ListFragment : Fragment() {
 
@@ -43,6 +43,34 @@ class ListFragment : Fragment() {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
         }
 
+        // Add Menu
+        setHasOptionsMenu(true)
+
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.menu_delete) {
+            deleteAllReminders()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteAllReminders() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes") {_, _ ->
+            mSharedViewModel.deleteAll()
+            Toast.makeText(requireContext(), "Removed everything", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("No") {_, _ ->
+
+        }
+        builder.setTitle("Delete all reminders?")
+        builder.setMessage("Are you sure you want to delete everything?")
+        builder.create().show()
     }
 }

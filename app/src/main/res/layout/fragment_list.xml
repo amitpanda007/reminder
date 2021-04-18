@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pandacorp.remind.ui.main.ListFragment">
+    tools:context=".ui.main.ListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
@@ -25,7 +25,8 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_add_24"
-        android:tint="@color/white"
+        android:backgroundTint="@color/basil_orange_800"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

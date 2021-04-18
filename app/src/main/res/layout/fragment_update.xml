@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.AddFragment">
+    tools:context=".ui.main.UpdateFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutReminderText"
+        android:id="@+id/textInputLayoutReminderTextUpdate"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,55 +23,55 @@
         app:startIconDrawable="@drawable/ic_notes_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/reminderText"
+            android:id="@+id/reminderTextUpdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutDueDate"
+        android:id="@+id/textInputLayoutDueDateUpdate"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textInputLayoutReminderText"
+        android:layout_below="@+id/textInputLayoutReminderTextUpdate"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         app:endIconMode="custom"
         app:endIconDrawable="@drawable/ic_date_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutReminderText">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutReminderTextUpdate">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/datePickerText"
+            android:id="@+id/datePickerTextUpdate"
             android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutDueTime"
+        android:id="@+id/textInputLayoutDueTimeUpdate"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textInputLayoutReminderText"
+        android:layout_below="@+id/textInputLayoutReminderTextUpdate"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         app:endIconMode="custom"
         app:endIconDrawable="@drawable/ic_time_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDueDate">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDueDateUpdate">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/timePickerText"
+            android:id="@+id/timePickerTextUpdate"
             android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
+        android:id="@+id/chipGroupUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:singleSelection="true"
@@ -80,10 +80,10 @@
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDueTime">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDueTimeUpdate">
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/high"
+            android:id="@+id/highUpdate"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="High"
             android:textAlignment="center"
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/medium"
+            android:id="@+id/mediumUpdate"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:text="Medium"
             app:chipBackgroundColor="@color/medium"
@@ -102,7 +102,7 @@
 
         <com.google.android.material.chip.Chip
             style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:id="@+id/low"
+            android:id="@+id/lowUpdate"
             android:text="Low"
             app:chipBackgroundColor="@color/low"
             android:textAlignment="center"
@@ -111,14 +111,14 @@
     </com.google.android.material.chip.ChipGroup>
 
     <Button
-        android:id="@+id/add_btn"
+        android:id="@+id/update_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Add"
+        android:text="Update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/chipGroupUpdate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

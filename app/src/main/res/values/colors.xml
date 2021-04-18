@@ -14,7 +14,7 @@
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="high">#FFD50000</color>
-    <color name="medium">#FF0091EA</color>
-    <color name="low">#FF00C853</color>
+    <color name="high">#FFFF9E80</color>
+    <color name="medium">#FF80D8FF</color>
+    <color name="low">#FFB9F6CA</color>
 </resources>
