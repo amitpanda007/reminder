@@ -6,7 +6,7 @@ import androidx.room.*
 @Dao
 interface ReminderDao {
 
-    @Query("SELECT * FROM reminder_table ORDER BY id ASC")
+    @Query("SELECT * FROM reminder_table ORDER BY dueDate ASC")
     fun getAllData(): LiveData<List<Reminder>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
