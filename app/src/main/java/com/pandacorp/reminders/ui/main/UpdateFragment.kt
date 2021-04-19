@@ -15,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -105,8 +107,12 @@ class UpdateFragment : Fragment() {
     }
 
     private fun openDatePicker() {
+        val dateValidator: CalendarConstraints.DateValidator = DateValidatorPointForward.now()
+        val dateConstraint = CalendarConstraints.Builder().setValidator(dateValidator).build()
+
         val datePicker = MaterialDatePicker.Builder
             .datePicker()
+            .setCalendarConstraints(dateConstraint)
             .setTitleText("Reminder Date")
             .build()
 

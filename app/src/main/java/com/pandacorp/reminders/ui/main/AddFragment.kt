@@ -1,34 +1,45 @@
 package com.pandacorp.reminders.ui.main
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.CalendarConstraints.DateValidator
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
-import com.pandacorp.reminders.model.Priority
+import com.pandacorp.reminders.ReminderBroadcaster
 import com.pandacorp.reminders.data.Reminder
+import com.pandacorp.reminders.model.Priority
 import com.pandacorp.reminders.viewmodel.SharedViewModel
-import java.util.Calendar
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class AddFragment : Fragment() {
 
     private lateinit var mSharedViewModel: SharedViewModel
     private var dueDate: Long = 0
+    private var selectedDateText = ""
     private var chipId: Int = -1
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,6 +50,7 @@ class AddFragment : Fragment() {
         mSharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         view.findViewById<Button>(R.id.add_btn).setOnClickListener {
             insertReminderToDB()
+            createReminder()
         }
 
         // Date button selection
@@ -66,16 +78,21 @@ class AddFragment : Fragment() {
     }
 
     private fun openDatePicker() {
+        val dateValidator: DateValidator = DateValidatorPointForward.now()
+        val dateConstraint = CalendarConstraints.Builder().setValidator(dateValidator).build()
+
         val datePicker = MaterialDatePicker.Builder
             .datePicker()
+            .setCalendarConstraints(dateConstraint)
+            .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
             .setTitleText("Reminder Date")
             .build()
 
         datePicker.show(childFragmentManager, "DATE_PICKER")
         datePicker.addOnPositiveButtonClickListener {
-            val selectedDate = datePicker.headerText
+            selectedDateText = datePicker.headerText
             val dateTextView = view?.findViewById<TextView>(R.id.datePickerText)
-            dateTextView?.text = selectedDate
+            dateTextView?.text = selectedDateText
             dueDate = datePicker.selection!!
         }
     }
@@ -84,10 +101,14 @@ class AddFragment : Fragment() {
         val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
         val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
 
+        val rightNow: Calendar = Calendar.getInstance()
+        val currentHour: Int = rightNow.get(Calendar.HOUR)
+        val currentMin: Int = rightNow.get(Calendar.MINUTE)
+
         val picker = MaterialTimePicker.Builder()
             .setTimeFormat(clockFormat)
-            .setHour(12)
-            .setMinute(0)
+            .setHour(currentHour)
+            .setMinute(currentMin)
             .setTitleText("Remind At")
             .build()
         picker.show(childFragmentManager, "TIME_PICKER")
@@ -98,6 +119,30 @@ class AddFragment : Fragment() {
             val timeTextView = view?.findViewById<TextView>(R.id.timePickerText)
             timeTextView?.text = "$hour:$min"
         }
+    }
+
+    private fun createReminder() {
+        val intent = Intent(context, ReminderBroadcaster::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val reminderData = view?.findViewById<TextView>(R.id.reminderText)?.text.toString()
+        intent.putExtra("reminder", reminderData)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Calculate Reminder Time
+        val reminderDate = dueDate
+        val reminderTime = view?.findViewById<TextView>(R.id.timePickerText)?.text.toString() + ":00"
+        val sdf1 = SimpleDateFormat("MMM dd yyyy")
+        val formattedDate = sdf1.format(Date(reminderDate))
+        val timeZone = TimeZone.getDefault().getDisplayName()
+        val dateString = "$formattedDate $reminderTime $timeZone"
+        val sdf2 = SimpleDateFormat("MMM dd yyyy HH:mm:ss zzz")
+        val date: Date = sdf2.parse(dateString)
+        val reminderEpoch = date.time
+        Log.i(LOG_TAG, "Reminder Set for $reminderEpoch")
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
     }
 
     private fun insertReminderToDB() {
