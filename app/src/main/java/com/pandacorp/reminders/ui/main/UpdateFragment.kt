@@ -1,6 +1,10 @@
 package com.pandacorp.reminders.ui.main
 
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -24,6 +28,7 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
+import com.pandacorp.reminders.ReminderBroadcaster
 import com.pandacorp.reminders.data.Reminder
 import com.pandacorp.reminders.model.Priority
 import com.pandacorp.reminders.viewmodel.SharedViewModel
@@ -149,6 +154,35 @@ class UpdateFragment : Fragment() {
         }
     }
 
+    private fun updateReminder() {
+        val intent = Intent(context, ReminderBroadcaster::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val reminderData = view?.findViewById<TextView>(R.id.reminderTextUpdate)?.text.toString()
+        intent.putExtra("reminder", reminderData)
+
+        // Remove older Pending Intent
+        PendingIntent.getBroadcast(context, args.currentReminder.intentRequestCode, intent, 0).cancel()
+
+        // Create new Pending Intent to save
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, args.currentReminder.intentRequestCode, intent, 0)
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Calculate Reminder Time
+        val reminderDate = dueDate
+        val reminderTime = view?.findViewById<TextView>(R.id.timePickerTextUpdate)?.text.toString() + ":00"
+        val sdf1 = SimpleDateFormat("MMM dd yyyy")
+        val formattedDate = sdf1.format(Date(reminderDate))
+        val timeZone = TimeZone.getDefault().getDisplayName()
+        val dateString = "$formattedDate $reminderTime $timeZone"
+        val sdf2 = SimpleDateFormat("MMM dd yyyy HH:mm:ss zzz")
+        val date: Date = sdf2.parse(dateString)
+        val reminderEpoch = date.time
+        Log.i(LOG_TAG, "Reminder Updated for $reminderEpoch")
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
+    }
+
     private fun updateReminderInDB() {
         val reminderTextUpdated =
             view?.findViewById<TextView>(R.id.reminderTextUpdate)?.text.toString()
@@ -168,7 +202,7 @@ class UpdateFragment : Fragment() {
 
             val updatedReminder = Reminder(
                 args.currentReminder.id, reminderTextUpdated, priority, Date(dueDate),
-                reminderTimeUpdated, Calendar.getInstance().time, false
+                reminderTimeUpdated, Calendar.getInstance().time, false, args.currentReminder.intentRequestCode
             )
             Log.i(LOG_TAG, updatedReminder.toString())
             mSharedViewModel.updateReminder(updatedReminder)
@@ -178,6 +212,7 @@ class UpdateFragment : Fragment() {
             Toast.makeText(requireContext(), "Please provide a proper Reminder", Toast.LENGTH_LONG)
                 .show()
         }
+        updateReminder()
     }
 
     private fun inputCheck(reminderTextUpdate: String): Boolean {
@@ -190,12 +225,20 @@ class UpdateFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_delete) {
-            deleteUser()
+            deleteReminder()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun deleteUser() {
+    private fun deleteReminder() {
+        val intent = Intent(context, ReminderBroadcaster::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        // Remove Pending Intent
+        PendingIntent.getBroadcast(context, args.currentReminder.intentRequestCode, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+
+
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes") { _, _ ->
             mSharedViewModel.deleteReminder(args.currentReminder)

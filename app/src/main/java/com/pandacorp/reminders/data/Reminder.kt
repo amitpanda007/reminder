@@ -8,7 +8,6 @@ import kotlinx.parcelize.Parcelize
 import com.pandacorp.reminders.model.Priority
 
 
-
 @Parcelize
 @Entity(tableName = "reminder_table")
 data class Reminder(
@@ -19,10 +18,11 @@ data class Reminder(
     var dueDate: Date,
     var dueTime: String,
     var dateCreated: Date,
-    var isDone: Boolean
+    var isDone: Boolean,
+    var intentRequestCode: Int
 ) : Parcelable {
     override fun toString(): String {
-        return "Reminder(reminderId=$id, reminder=$reminderText, priority=$priority, dueDate=$dueDate, dueTime=$dueTime, dateCreated=$dateCreated, isDone=$isDone)"
+        return "Reminder(reminderId=$id, reminder=$reminderText, priority=$priority, dueDate=$dueDate, dueTime=$dueTime, dateCreated=$dateCreated, isDone=$isDone, intentRequestCode=$intentRequestCode)"
     }
 }
 

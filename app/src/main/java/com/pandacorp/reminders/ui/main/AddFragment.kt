@@ -31,6 +31,7 @@ import com.pandacorp.reminders.model.Priority
 import com.pandacorp.reminders.viewmodel.SharedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.random.Random
 
 
 class AddFragment : Fragment() {
@@ -49,8 +50,8 @@ class AddFragment : Fragment() {
 
         mSharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         view.findViewById<Button>(R.id.add_btn).setOnClickListener {
-            insertReminderToDB()
-            createReminder()
+            val requestCode = insertReminderToDB()
+            createReminder(requestCode)
         }
 
         // Date button selection
@@ -121,13 +122,13 @@ class AddFragment : Fragment() {
         }
     }
 
-    private fun createReminder() {
+    private fun createReminder(requestCode: Int) {
         val intent = Intent(context, ReminderBroadcaster::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val reminderData = view?.findViewById<TextView>(R.id.reminderText)?.text.toString()
         intent.putExtra("reminder", reminderData)
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0)
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // Calculate Reminder Time
@@ -145,7 +146,7 @@ class AddFragment : Fragment() {
         alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
     }
 
-    private fun insertReminderToDB() {
+    private fun insertReminderToDB() : Int{
         var priority: Priority = Priority.NONE
         val reminderText = view?.findViewById<TextView>(R.id.reminderText)?.text.toString()
         val reminderTime = view?.findViewById<TextView>(R.id.timePickerText)?.text.toString()
@@ -159,12 +160,12 @@ class AddFragment : Fragment() {
             }
         }
 
-
+        val requestCode = Random.nextInt(0, 1000) * Random.nextInt(0, 1000)
         if (inputCheck(reminderText)) {
 
             val reminder = Reminder(
                 0, reminderText, priority, Date(dueDate),
-                reminderTime, Calendar.getInstance().time, false
+                reminderTime, Calendar.getInstance().time, false, requestCode
             )
             Log.i(LOG_TAG, reminder.toString())
             mSharedViewModel.addReminder(reminder)
@@ -174,6 +175,7 @@ class AddFragment : Fragment() {
             Toast.makeText(requireContext(), "Please provide a proper Reminder", Toast.LENGTH_LONG)
                 .show()
         }
+        return requestCode
     }
 
     private fun inputCheck(reminderText: String): Boolean {
