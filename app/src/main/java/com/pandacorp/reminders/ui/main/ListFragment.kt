@@ -1,8 +1,12 @@
 package com.pandacorp.reminders.ui.main
 
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -12,7 +16,9 @@ import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
+import com.pandacorp.reminders.ReminderBroadcaster
 import com.pandacorp.reminders.ui.main.ListAdaptor
 import com.pandacorp.reminders.viewmodel.SharedViewModel
 
@@ -70,6 +76,16 @@ class ListFragment : Fragment() {
     private fun deleteAllReminders() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes") { _, _ ->
+            mSharedViewModel.readAllReminder.observe(viewLifecycleOwner, Observer { reminder ->
+                for (item in reminder) {
+                    Log.i(LOG_TAG, "Removing intent with Code: ${item.intentRequestCode}")
+                    val intent = Intent(context, ReminderBroadcaster::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    // Remove older Pending Intent
+                    PendingIntent.getBroadcast(context, item.intentRequestCode, intent, 0).cancel()
+                }
+            })
             mSharedViewModel.deleteAll()
             Toast.makeText(requireContext(), "Removed everything", Toast.LENGTH_SHORT).show()
         }

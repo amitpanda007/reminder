@@ -174,7 +174,7 @@ class UpdateFragment : Fragment() {
         val reminderTime = view?.findViewById<TextView>(R.id.timePickerTextUpdate)?.text.toString() + ":00"
         val sdf1 = SimpleDateFormat("MMM dd yyyy")
         val formattedDate = sdf1.format(Date(reminderDate))
-        val timeZone = TimeZone.getDefault().getDisplayName()
+        val timeZone = TimeZone.getDefault().displayName
         val dateString = "$formattedDate $reminderTime $timeZone"
         val sdf2 = SimpleDateFormat("MMM dd yyyy HH:mm:ss zzz")
         val date: Date = sdf2.parse(dateString)
