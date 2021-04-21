@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -40,7 +41,13 @@ class ListFragment : Fragment() {
         })
 
         view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
-            findNavController().navigate(R.id.action_listFragment_to_addFragment)
+            findNavController().navigate(R.id.action_listFragment_to_addFragment, null,
+                navOptions { // Use the Kotlin DSL for building NavOptions
+                    anim {
+                        enter = android.R.animator.fade_in
+                        exit = android.R.animator.fade_out
+                    }
+                })
         }
 
         // Add Menu
@@ -54,7 +61,7 @@ class ListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.menu_delete) {
+        if (item.itemId == R.id.menu_delete) {
             deleteAllReminders()
         }
         return super.onOptionsItemSelected(item)
@@ -62,11 +69,11 @@ class ListFragment : Fragment() {
 
     private fun deleteAllReminders() {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Yes") {_, _ ->
+        builder.setPositiveButton("Yes") { _, _ ->
             mSharedViewModel.deleteAll()
             Toast.makeText(requireContext(), "Removed everything", Toast.LENGTH_SHORT).show()
         }
-        builder.setNegativeButton("No") {_, _ ->
+        builder.setNegativeButton("No") { _, _ ->
 
         }
         builder.setTitle("Delete all reminders?")

@@ -4,11 +4,11 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/basil_green_500</item>
         <item name="colorPrimaryVariant">@color/basil_green_800</item>
-        <item name="colorOnPrimary">@color/basil_orange_50</item>
+        <item name="colorOnPrimary">@color/basil_green_100</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/basil_orange_800</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/basil_orange_800</item>
+        <item name="colorSecondaryVariant">@color/basil_orange_500</item>
+        <item name="colorOnSecondary">@color/basil_orange_50</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->

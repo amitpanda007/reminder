@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CalendarConstraints.DateValidator
@@ -170,7 +171,12 @@ class AddFragment : Fragment() {
             Log.i(LOG_TAG, reminder.toString())
             mSharedViewModel.addReminder(reminder)
             Toast.makeText(requireContext(), "New Reminder added!", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.action_addFragment_to_listFragment)
+            findNavController().navigate(R.id.action_addFragment_to_listFragment, null, navOptions { // Use the Kotlin DSL for building NavOptions
+                anim {
+                    enter = android.R.animator.fade_in
+                    exit = android.R.animator.fade_out
+                }
+            })
         } else {
             Toast.makeText(requireContext(), "Please provide a proper Reminder", Toast.LENGTH_LONG)
                 .show()

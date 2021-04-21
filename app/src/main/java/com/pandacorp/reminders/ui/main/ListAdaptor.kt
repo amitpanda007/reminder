@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.RecyclerView
 import com.pandacorp.reminders.ui.main.ListFragmentDirections
 import com.pandacorp.reminders.ui.main.ListFragment
@@ -61,7 +62,12 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
 
         holder.itemView.findViewById<ConstraintLayout>(R.id.reminderRowLayout).setOnClickListener {
             val action = ListFragmentDirections.actionListFragmentToUpdateFragment(currentReminder)
-            holder.itemView.findNavController().navigate(action)
+            holder.itemView.findNavController().navigate(action, navOptions {
+                anim {
+                    enter = android.R.animator.fade_in
+                    exit = android.R.animator.fade_out
+                }
+            })
         }
     }
 
