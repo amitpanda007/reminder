@@ -129,6 +129,8 @@ class AddFragment : Fragment() {
         }
         val reminderData = view?.findViewById<TextView>(R.id.reminderText)?.text.toString()
         intent.putExtra("reminder", reminderData)
+        intent.putExtra("notificationId", requestCode)
+
         val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0)
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -170,7 +172,7 @@ class AddFragment : Fragment() {
             )
             Log.i(LOG_TAG, reminder.toString())
             mSharedViewModel.addReminder(reminder)
-            Toast.makeText(requireContext(), "New Reminder added!", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "New Reminder Added", Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.action_addFragment_to_listFragment, null, navOptions { // Use the Kotlin DSL for building NavOptions
                 anim {
                     enter = android.R.animator.fade_in

@@ -160,6 +160,7 @@ class UpdateFragment : Fragment() {
         }
         val reminderData = view?.findViewById<TextView>(R.id.reminderTextUpdate)?.text.toString()
         intent.putExtra("reminder", reminderData)
+        intent.putExtra("notificationId", args.currentReminder.intentRequestCode)
 
         // Remove older Pending Intent
         PendingIntent.getBroadcast(context, args.currentReminder.intentRequestCode, intent, 0).cancel()

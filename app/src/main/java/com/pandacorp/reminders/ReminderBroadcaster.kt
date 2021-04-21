@@ -12,17 +12,21 @@ class ReminderBroadcaster: BroadcastReceiver() {
         Log.i(LOG_TAG, "INTENT TIME REACHED FOR REMINDER !!!")
 
         val reminderText = intent!!.extras!!.getString("reminder")
+        val notificationId = intent!!.extras!!.getInt("notificationId")
+
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(
             context,
             "notifyReminder"
         )
-            .setSmallIcon(R.drawable.ic_baseline_add_alert_24)
+            .setSmallIcon(R.drawable.ic_add_reminder)
             .setContentTitle(reminderText)
             .setContentText("")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         with(NotificationManagerCompat.from(context)) {
-            notify(200, builder.build())
+            if (notificationId != null) {
+                notify(notificationId, builder.build())
+            }
         }
     }
 }
