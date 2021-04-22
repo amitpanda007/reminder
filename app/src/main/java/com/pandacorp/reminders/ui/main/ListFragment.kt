@@ -12,9 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
 import com.pandacorp.reminders.ReminderBroadcaster
@@ -25,6 +27,9 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
     private lateinit var mSharedViewModel: SharedViewModel
     private lateinit var recyclerView: RecyclerView
+    private lateinit var adaptor: ListAdaptor
+    private lateinit var allReminders: List<Reminder>
+    private lateinit var removedReminder: Reminder
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +39,7 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
 
         //Recycler View
-        val adaptor = ListAdaptor()
+        adaptor = ListAdaptor()
         recyclerView = view.findViewById(R.id.recyclerview)
         recyclerView.adapter = adaptor
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -43,6 +48,7 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         mSharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         mSharedViewModel.readAllReminder.observe(viewLifecycleOwner, Observer { reminder ->
             adaptor.setData(reminder, this)
+            allReminders = reminder
         })
 
         view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
@@ -58,7 +64,37 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         // Add Menu
         setHasOptionsMenu(true)
 
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
         return view
+    }
+
+    private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
+        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+        ItemTouchHelper.LEFT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            var position = viewHolder.adapterPosition
+            when(direction) {
+                ItemTouchHelper.LEFT -> {
+                    removedReminder = adaptor.getData().get(position)
+                    adaptor.removeReminder(position)
+
+                    Snackbar.make(recyclerView, "Reminder is deleted", Snackbar.LENGTH_LONG).setAction("Undo", View.OnClickListener {
+                        adaptor.addReminder(position, removedReminder)
+                    }).show()
+                }
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

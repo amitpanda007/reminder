@@ -22,7 +22,7 @@ import java.util.*
 class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
 
 {
-    private var reminderList = emptyList<Reminder>()
+    private var reminderList = mutableListOf<Reminder>()
     private lateinit var onItemClick: OnItemClick
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -92,9 +92,23 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
     }
 
     fun setData(reminders: List<Reminder>, onItemClick: OnItemClick) {
-        this.reminderList = reminders
+        this.reminderList = reminders as MutableList<Reminder>
         this.onItemClick = onItemClick
         notifyDataSetChanged()
+    }
+
+    fun getData(): List<Reminder> {
+        return this.reminderList
+    }
+
+    fun removeReminder(position: Int) {
+        this.reminderList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun addReminder(position: Int, reminder: Reminder) {
+        this.reminderList.add(position, reminder)
+        notifyItemInserted(position)
     }
 
     interface OnItemClick{
