@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,10 +18,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
 import com.pandacorp.reminders.ReminderBroadcaster
-import com.pandacorp.reminders.ui.main.ListAdaptor
+import com.pandacorp.reminders.data.Reminder
 import com.pandacorp.reminders.viewmodel.SharedViewModel
 
-class ListFragment : Fragment() {
+class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
     private lateinit var mSharedViewModel: SharedViewModel
     private lateinit var recyclerView: RecyclerView
@@ -43,7 +42,7 @@ class ListFragment : Fragment() {
         // User View Model
         mSharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         mSharedViewModel.readAllReminder.observe(viewLifecycleOwner, Observer { reminder ->
-            adaptor.setData(reminder)
+            adaptor.setData(reminder, this)
         })
 
         view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
@@ -95,5 +94,11 @@ class ListFragment : Fragment() {
         builder.setTitle("Delete all reminders?")
         builder.setMessage("Are you sure you want to delete everything?")
         builder.create().show()
+    }
+
+    override fun onClick(reminder: Reminder) {
+        val done = !reminder.isDone
+        val updatedReminder = Reminder(reminder.id, reminder.reminderText, reminder.priority, reminder.dueDate, reminder.dueTime, reminder.dateCreated, done, reminder.intentRequestCode)
+        mSharedViewModel.updateReminder(updatedReminder)
     }
 }
