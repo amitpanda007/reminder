@@ -31,6 +31,7 @@ import com.pandacorp.reminders.R
 import com.pandacorp.reminders.ReminderBroadcaster
 import com.pandacorp.reminders.data.Reminder
 import com.pandacorp.reminders.model.Priority
+import com.pandacorp.reminders.ui.util.Common
 import com.pandacorp.reminders.viewmodel.SharedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -63,7 +64,7 @@ class UpdateFragment : Fragment() {
 
         dueTime = args.currentReminder.dueTime
         view.findViewById<TextInputEditText>(R.id.timePickerTextUpdate)
-            .setText(args.currentReminder.dueTime)
+            .setText(Common.convertToAMPM(args.currentReminder.dueTime))
 
 
         priority = args.currentReminder.priority
@@ -149,8 +150,9 @@ class UpdateFragment : Fragment() {
         picker.addOnPositiveButtonClickListener {
             val hour = picker.hour
             val min = picker.minute
+            dueTime = "$hour:$min"
             val timeTextView = view?.findViewById<TextView>(R.id.timePickerTextUpdate)
-            timeTextView?.text = "$hour:$min"
+            timeTextView?.text = Common.convertToAMPM(dueTime)
         }
     }
 
@@ -171,7 +173,7 @@ class UpdateFragment : Fragment() {
 
         // Calculate Reminder Time
         val reminderDate = dueDate
-        val reminderTime = view?.findViewById<TextView>(R.id.timePickerTextUpdate)?.text.toString() + ":00"
+        val reminderTime = "$dueTime:00"
         val sdf1 = SimpleDateFormat("MMM dd yyyy")
         val formattedDate = sdf1.format(Date(reminderDate))
         val timeZone = TimeZone.getDefault().displayName
@@ -187,8 +189,6 @@ class UpdateFragment : Fragment() {
     private fun updateReminderInDB() {
         val reminderTextUpdated =
             view?.findViewById<TextView>(R.id.reminderTextUpdate)?.text.toString()
-        val reminderTimeUpdated =
-            view?.findViewById<TextView>(R.id.timePickerTextUpdate)?.text.toString()
 
         when (chipId) {
             R.id.highUpdate -> priority = Priority.HIGH
@@ -203,7 +203,7 @@ class UpdateFragment : Fragment() {
 
             val updatedReminder = Reminder(
                 args.currentReminder.id, reminderTextUpdated, priority, Date(dueDate),
-                reminderTimeUpdated, Calendar.getInstance().time, false, args.currentReminder.intentRequestCode
+                dueTime, Calendar.getInstance().time, false, args.currentReminder.intentRequestCode
             )
             Log.i(LOG_TAG, updatedReminder.toString())
             mSharedViewModel.updateReminder(updatedReminder)

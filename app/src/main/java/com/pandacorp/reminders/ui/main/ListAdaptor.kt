@@ -16,6 +16,7 @@ import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
 import com.pandacorp.reminders.model.Priority
 import com.pandacorp.reminders.data.Reminder
+import com.pandacorp.reminders.ui.util.Common
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,7 +54,7 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         holder.reminderId.text = (position + 1).toString()
         holder.reminderText.text = currentReminder.reminderText.toString()
         holder.dueDate.text = dueDate.toString()
-        holder.dueTime.text = currentReminder.dueTime.toString()
+        holder.dueTime.text = Common.convertToAMPM(currentReminder.dueTime.toString())
         holder.done.isChecked = currentReminder.isDone
         if(currentReminder.isDone) {
             Log.i(LOG_TAG, "Setting Text Strike through")
