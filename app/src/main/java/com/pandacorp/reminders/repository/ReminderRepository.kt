@@ -6,7 +6,8 @@ import com.pandacorp.reminders.data.ReminderDao
 
 class ReminderRepository(private val reminderDao: ReminderDao) {
 
-    val reminderAllData: LiveData<List<Reminder>> = reminderDao.getAllData()
+//    val reminderAllData: LiveData<List<Reminder>> = reminderDao.getAllData()
+    val reminderAllData: LiveData<List<Reminder>> = reminderDao.getAllDataSortedByDone()
 
     suspend fun addReminder(reminder: Reminder) {
         reminderDao.addReminder(reminder)

@@ -18,4 +18,6 @@
     <color name="high">#FFFF9E80</color>
     <color name="medium">#FF80D8FF</color>
     <color name="low">#FFB9F6CA</color>
+
+    <color name="delete_background">#FFFFCDD2</color>
 </resources>

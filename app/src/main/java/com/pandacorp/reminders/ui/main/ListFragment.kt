@@ -3,10 +3,12 @@ package com.pandacorp.reminders.ui.main
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +24,8 @@ import com.pandacorp.reminders.R
 import com.pandacorp.reminders.ReminderBroadcaster
 import com.pandacorp.reminders.data.Reminder
 import com.pandacorp.reminders.viewmodel.SharedViewModel
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+
 
 class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
@@ -72,7 +76,8 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
     private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
         ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-        ItemTouchHelper.LEFT) {
+        ItemTouchHelper.LEFT
+    ) {
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
@@ -88,11 +93,29 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
                     removedReminder = adaptor.getData().get(position)
                     adaptor.removeReminder(position)
 
-                    Snackbar.make(recyclerView, "Reminder is deleted", Snackbar.LENGTH_LONG).setAction("Undo", View.OnClickListener {
-                        adaptor.addReminder(position, removedReminder)
-                    }).show()
+                    Snackbar.make(recyclerView, "Reminder temporarily deleted", Snackbar.LENGTH_LONG)
+                        .setAction(
+                            "Undo",
+                            View.OnClickListener {
+                                adaptor.addReminder(position, removedReminder)
+                            }).show()
                 }
             }
+        }
+
+        override fun onChildDraw(c: Canvas, recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+
+            RecyclerViewSwipeDecorator.Builder(
+                c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
+            )
+                .addBackgroundColor(ContextCompat.getColor(context!!, R.color.delete_background))
+                .addActionIcon(R.drawable.ic_delete_24)
+                .create()
+                .decorate()
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         }
 
     }
@@ -134,7 +157,17 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
     override fun onClick(reminder: Reminder) {
         val done = !reminder.isDone
-        val updatedReminder = Reminder(reminder.id, reminder.reminderText, reminder.priority, reminder.dueDate, reminder.dueTime, reminder.dateCreated, done, reminder.intentRequestCode)
+        val updatedReminder = Reminder(
+            reminder.id,
+            reminder.reminderText,
+            reminder.priority,
+            reminder.dueDate,
+            reminder.dueTime,
+            reminder.dateCreated,
+            done,
+            reminder.intentRequestCode
+        )
         mSharedViewModel.updateReminder(updatedReminder)
+        adaptor.updateReminderFlag()
     }
 }

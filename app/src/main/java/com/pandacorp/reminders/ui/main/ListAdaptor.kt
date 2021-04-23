@@ -56,7 +56,11 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         holder.dueTime.text = currentReminder.dueTime.toString()
         holder.done.isChecked = currentReminder.isDone
         if(currentReminder.isDone) {
-            holder.reminderText.setPaintFlags(holder.reminderText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
+            Log.i(LOG_TAG, "Setting Text Strike through")
+            holder.reminderText.paintFlags = holder.reminderText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }else {
+            Log.i(LOG_TAG, "Resetting Text Strike through")
+            holder.reminderText.paintFlags = holder.reminderText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
         }
 
         when (currentReminder.priority.name) {
@@ -80,13 +84,6 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
 
         holder.itemView.findViewById<RadioButton>(R.id.done).setOnClickListener {
             holder.done.isChecked = !currentReminder.isDone
-            if(!currentReminder.isDone) {
-                Log.i(LOG_TAG, "Setting Text Strike through")
-                holder.reminderText.paintFlags = holder.reminderText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            }else {
-                Log.i(LOG_TAG, "Resetting Text Strike through")
-                holder.reminderText.paintFlags = holder.reminderText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-            }
             onItemClick.onClick(currentReminder)
         }
     }
@@ -109,6 +106,10 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
     fun addReminder(position: Int, reminder: Reminder) {
         this.reminderList.add(position, reminder)
         notifyItemInserted(position)
+    }
+
+    fun updateReminderFlag() {
+        notifyDataSetChanged()
     }
 
     interface OnItemClick{

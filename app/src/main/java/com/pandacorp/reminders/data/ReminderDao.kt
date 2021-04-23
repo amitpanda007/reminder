@@ -9,6 +9,9 @@ interface ReminderDao {
     @Query("SELECT * FROM reminder_table ORDER BY dueDate ASC")
     fun getAllData(): LiveData<List<Reminder>>
 
+    @Query("SELECT * FROM reminder_table ORDER BY isDone ASC, dueDate ASC")
+    fun getAllDataSortedByDone(): LiveData<List<Reminder>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addReminder(reminder: Reminder)
 
