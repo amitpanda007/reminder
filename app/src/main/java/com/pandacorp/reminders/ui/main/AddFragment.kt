@@ -29,6 +29,7 @@ import com.pandacorp.reminders.R
 import com.pandacorp.reminders.ReminderBroadcaster
 import com.pandacorp.reminders.data.Reminder
 import com.pandacorp.reminders.model.Priority
+import com.pandacorp.reminders.ui.util.Common
 import com.pandacorp.reminders.viewmodel.SharedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,6 +40,7 @@ class AddFragment : Fragment() {
 
     private lateinit var mSharedViewModel: SharedViewModel
     private var dueDate: Long = 0
+    private var dueTime: String = ""
     private var selectedDateText = ""
     private var chipId: Int = -1
 
@@ -118,8 +120,9 @@ class AddFragment : Fragment() {
         picker.addOnPositiveButtonClickListener {
             val hour = picker.hour
             val min = picker.minute
+            dueTime = "$hour:$min"
             val timeTextView = view?.findViewById<TextView>(R.id.timePickerText)
-            timeTextView?.text = "$hour:$min"
+            timeTextView?.text = Common.convertToAMPM(dueTime)
         }
     }
 
@@ -136,10 +139,10 @@ class AddFragment : Fragment() {
 
         // Calculate Reminder Time
         val reminderDate = dueDate
-        val reminderTime = view?.findViewById<TextView>(R.id.timePickerText)?.text.toString() + ":00"
+        val reminderTime = "$dueTime:00"
         val sdf1 = SimpleDateFormat("MMM dd yyyy")
         val formattedDate = sdf1.format(Date(reminderDate))
-        val timeZone = TimeZone.getDefault().getDisplayName()
+        val timeZone = TimeZone.getDefault().displayName
         val dateString = "$formattedDate $reminderTime $timeZone"
         val sdf2 = SimpleDateFormat("MMM dd yyyy HH:mm:ss zzz")
         val date: Date = sdf2.parse(dateString)
@@ -152,7 +155,6 @@ class AddFragment : Fragment() {
     private fun insertReminderToDB() : Int{
         var priority: Priority = Priority.NONE
         val reminderText = view?.findViewById<TextView>(R.id.reminderText)?.text.toString()
-        val reminderTime = view?.findViewById<TextView>(R.id.timePickerText)?.text.toString()
 
         when (chipId) {
             R.id.high -> priority = Priority.HIGH
@@ -168,7 +170,7 @@ class AddFragment : Fragment() {
 
             val reminder = Reminder(
                 0, reminderText, priority, Date(dueDate),
-                reminderTime, Calendar.getInstance().time, false, requestCode
+                dueTime, Calendar.getInstance().time, false, requestCode
             )
             Log.i(LOG_TAG, reminder.toString())
             mSharedViewModel.addReminder(reminder)
