@@ -43,6 +43,7 @@ class AddFragment : Fragment() {
     private var dueTime: String = ""
     private var selectedDateText = ""
     private var chipId: Int = -1
+    private var repeatOptions = emptyArray<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +51,11 @@ class AddFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add, container, false)
+
+        val autoCompleteView = view.findViewById<AutoCompleteTextView>(R.id.repeatOption)
+        repeatOptions = resources.getStringArray(R.array.repeatOptions)
+        val arrayAdaptor = ArrayAdapter(requireContext(), R.layout.dropdown_item, repeatOptions)
+        autoCompleteView.setAdapter(arrayAdaptor)
 
         mSharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         view.findViewById<Button>(R.id.add_btn).setOnClickListener {
@@ -134,7 +140,12 @@ class AddFragment : Fragment() {
         intent.putExtra("reminder", reminderData)
         intent.putExtra("notificationId", requestCode)
 
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            0
+        )
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         // Calculate Reminder Time
@@ -149,7 +160,24 @@ class AddFragment : Fragment() {
         val reminderEpoch = date.time
         Log.i(LOG_TAG, "Reminder Set for $reminderEpoch")
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
+        val repeat = view?.findViewById<AutoCompleteTextView>(R.id.repeatOption)
+        val c = Calendar.getInstance()
+        val monthMaxDays = c.getActualMaximum(Calendar.DAY_OF_MONTH)
+        var repeatTime : Long = 0
+        if (repeat != null) {
+            when(repeat.text.toString()) {
+                repeatOptions[0] -> repeatTime = 0
+                repeatOptions[1] -> repeatTime = AlarmManager.INTERVAL_HOUR
+                repeatOptions[2] -> repeatTime = AlarmManager.INTERVAL_DAY
+                repeatOptions[3] -> repeatTime = 1000 * 60 * 60 * 24 * 7
+                repeatOptions[4] -> repeatTime = (1000 * 60 * 60 * 24 * monthMaxDays).toLong()
+            }
+        }
+        if(repeatTime.equals(0)) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
+        }else {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent);
+        }
     }
 
     private fun insertReminderToDB() : Int{
@@ -175,12 +203,15 @@ class AddFragment : Fragment() {
             Log.i(LOG_TAG, reminder.toString())
             mSharedViewModel.addReminder(reminder)
             Toast.makeText(requireContext(), "New Reminder Added", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.action_addFragment_to_listFragment, null, navOptions { // Use the Kotlin DSL for building NavOptions
-                anim {
-                    enter = android.R.animator.fade_in
-                    exit = android.R.animator.fade_out
-                }
-            })
+            findNavController().navigate(
+                R.id.action_addFragment_to_listFragment,
+                null,
+                navOptions { // Use the Kotlin DSL for building NavOptions
+                    anim {
+                        enter = android.R.animator.fade_in
+                        exit = android.R.animator.fade_out
+                    }
+                })
         } else {
             Toast.makeText(requireContext(), "Please provide a proper Reminder", Toast.LENGTH_LONG)
                 .show()

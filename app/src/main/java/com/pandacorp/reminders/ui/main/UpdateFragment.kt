@@ -1,3 +1,4 @@
+
 package com.pandacorp.reminders.ui.main
 
 import android.app.AlarmManager
@@ -38,7 +39,7 @@ import java.util.*
 
 class UpdateFragment : Fragment() {
 
-    val args: UpdateFragmentArgs by navArgs()
+    private val args: UpdateFragmentArgs by navArgs()
     private lateinit var mSharedViewModel: SharedViewModel
     private var dueDate: Long = 0
     private var dueTime: String = ""
