@@ -36,7 +36,7 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         val dueTime = itemView.findViewById<TextView>(R.id.dueTime)
         val repeatText = itemView.findViewById<TextView>(R.id.repeatText)
         val repeatImage = itemView.findViewById<ImageButton>(R.id.repeatImageButton)
-        val done = itemView.findViewById<RadioButton>(R.id.done)
+//        val done = itemView.findViewById<RadioButton>(R.id.done)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -61,7 +61,7 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         holder.dueDate.text = dueDate.toString()
         holder.dueTime.text = Common.convertToAMPM(currentReminder.dueTime)
         holder.repeatText.text = currentReminder.repeat
-        holder.done.isChecked = currentReminder.isDone
+//        holder.done.isChecked = currentReminder.isDone
 
         if(currentReminder.repeat.contentEquals("OFF")) {
             holder.repeatImage.setColorFilter(R.color.black, PorterDuff.Mode.MULTIPLY)
@@ -94,10 +94,10 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
             })
         }
 
-        holder.itemView.findViewById<RadioButton>(R.id.done).setOnClickListener {
+        /*holder.itemView.findViewById<RadioButton>(R.id.done).setOnClickListener {
             holder.done.isChecked = !currentReminder.isDone
             onItemClick.onClick(currentReminder)
-        }
+        }*/
     }
 
     fun setData(reminders: List<Reminder>, onItemClick: OnItemClick) {

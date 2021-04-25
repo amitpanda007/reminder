@@ -34,6 +34,7 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
     private lateinit var adaptor: ListAdaptor
     private lateinit var allReminders: List<Reminder>
     private lateinit var removedReminder: Reminder
+    private lateinit var completedReminder: Reminder
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,7 +77,7 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
     private var simpleCallback = object : ItemTouchHelper.SimpleCallback(
         ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-        ItemTouchHelper.LEFT
+        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
     ) {
         override fun onMove(
             recyclerView: RecyclerView,
@@ -88,34 +89,95 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             var position = viewHolder.adapterPosition
-            when(direction) {
+            when (direction) {
                 ItemTouchHelper.LEFT -> {
-                    removedReminder = adaptor.getData().get(position)
+                    removedReminder = adaptor.getData()[position]
                     adaptor.removeReminder(position)
 
-                    Snackbar.make(recyclerView, "Reminder temporarily deleted", Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        recyclerView,
+                        "Reminder temporarily deleted",
+                        Snackbar.LENGTH_LONG
+                    )
                         .setAction(
                             "Undo",
                             View.OnClickListener {
                                 adaptor.addReminder(position, removedReminder)
                             }).show()
                 }
+                ItemTouchHelper.RIGHT -> {
+                    completedReminder = adaptor.getData()[position]
+                    val done = !completedReminder.isDone
+                    val updatedReminder = Reminder(
+                        completedReminder.id,
+                        completedReminder.reminderText,
+                        completedReminder.priority,
+                        completedReminder.dueDate,
+                        completedReminder.dueTime,
+                        completedReminder.dateCreated,
+                        done,
+                        completedReminder.repeat,
+                        completedReminder.intentRequestCode
+                    )
+                    mSharedViewModel.updateReminder(updatedReminder)
+                    adaptor.updateReminderFlag()
+
+                    Snackbar.make(
+                        recyclerView,
+                        "Reminder marked complete",
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(
+                            "Undo",
+                            View.OnClickListener {
+                                val updatedReminder = Reminder(
+                                    completedReminder.id,
+                                    completedReminder.reminderText,
+                                    completedReminder.priority,
+                                    completedReminder.dueDate,
+                                    completedReminder.dueTime,
+                                    completedReminder.dateCreated,
+                                    completedReminder.isDone,
+                                    completedReminder.repeat,
+                                    completedReminder.intentRequestCode
+                                )
+                                mSharedViewModel.updateReminder(updatedReminder)
+                            }).show()
+                }
             }
         }
 
-        override fun onChildDraw(c: Canvas, recyclerView: RecyclerView,
+        override fun onChildDraw(
+            c: Canvas, recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int,
             isCurrentlyActive: Boolean
         ) {
-
-            RecyclerViewSwipeDecorator.Builder(
-                c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
-            )
-                .addBackgroundColor(ContextCompat.getColor(context!!, R.color.delete_background))
-                .addActionIcon(R.drawable.ic_delete_24)
-                .create()
-                .decorate()
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                // Here, if dX > 0 then swiping right.
+                // If dX < 0 then swiping left.
+                // If dX == 0 then at at start position.
+                if(dX < 0) {
+                    RecyclerViewSwipeDecorator.Builder(
+                        c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
+                    )
+                        .addBackgroundColor(ContextCompat.getColor(context!!, R.color.delete_background))
+                        .addActionIcon(R.drawable.ic_delete_24)
+                        .create()
+                        .decorate()
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                }else {
+                    RecyclerViewSwipeDecorator.Builder(
+                        c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
+                    )
+                        .addBackgroundColor(ContextCompat.getColor(context!!, R.color.complete_background))
+                        .addActionIcon(R.drawable.ic_done_outline_24)
+                        .create()
+                        .decorate()
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                }
+            } else {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
         }
 
     }

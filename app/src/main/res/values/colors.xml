@@ -22,5 +22,8 @@
     <color name="medium">#FF80D8FF</color>
     <color name="low">#FFB9F6CA</color>
 
-    <color name="delete_background">#FFFFCDD2</color>
+    <color name="complete_background">#FF69F0AE</color>
+    <color name="complete_icon">#FF1B5E20</color>
+
+    <color name="delete_background">#FFFF5252</color>
 </resources>
