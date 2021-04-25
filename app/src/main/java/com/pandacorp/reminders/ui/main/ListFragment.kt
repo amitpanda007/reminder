@@ -165,6 +165,7 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
             reminder.dueTime,
             reminder.dateCreated,
             done,
+            reminder.repeat,
             reminder.intentRequestCode
         )
         mSharedViewModel.updateReminder(updatedReminder)

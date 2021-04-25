@@ -6,10 +6,10 @@
     <string name="channel_description">Channel for Reminder</string>
 
     <string-array name="repeatOptions">
-        <item>None</item>
-        <item>1 Hour</item>
-        <item>1 Day</item>
-        <item>1 Week</item>
-        <item>1 Month</item>
+        <item>OFF</item>
+        <item>HOURLY</item>
+        <item>DAILY</item>
+        <item>WEEKLY</item>
+        <item>MONTHLY</item>
     </string-array>
 </resources>

@@ -19,10 +19,19 @@ data class Reminder(
     var dueTime: String,
     var dateCreated: Date,
     var isDone: Boolean,
+    var repeat: String,
     var intentRequestCode: Int
 ) : Parcelable {
     override fun toString(): String {
-        return "Reminder(reminderId=$id, reminder=$reminderText, priority=$priority, dueDate=$dueDate, dueTime=$dueTime, dateCreated=$dateCreated, isDone=$isDone, intentRequestCode=$intentRequestCode)"
+        return "Reminder(reminderId=$id," +
+                "reminder=$reminderText," +
+                "priority=$priority," +
+                "dueDate=$dueDate," +
+                "dueTime=$dueTime," +
+                "dateCreated=$dateCreated," +
+                "isDone=$isDone," +
+                "repeat=$repeat," +
+                "intentRequestCode=$intentRequestCode)"
     }
 }
 

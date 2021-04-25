@@ -169,20 +169,29 @@ class AddFragment : Fragment() {
                 repeatOptions[0] -> repeatTime = 0
                 repeatOptions[1] -> repeatTime = AlarmManager.INTERVAL_HOUR
                 repeatOptions[2] -> repeatTime = AlarmManager.INTERVAL_DAY
-                repeatOptions[3] -> repeatTime = 1000 * 60 * 60 * 24 * 7
-                repeatOptions[4] -> repeatTime = (1000 * 60 * 60 * 24 * monthMaxDays).toLong()
+                repeatOptions[3] -> repeatTime = AlarmManager.INTERVAL_DAY * 7
+                repeatOptions[4] -> repeatTime = AlarmManager.INTERVAL_DAY * monthMaxDays
             }
         }
-        if(repeatTime.equals(0)) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
-        }else {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent);
+
+        // Check if alarm date is less than or greater than today's date time
+        val currentDateTime = Date().time
+        Log.i(LOG_TAG, "Current Time: $currentDateTime.toString()")
+
+        if(reminderEpoch >= currentDateTime) {
+            if(repeatTime.equals(0)) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
+            }else {
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent);
+            }
         }
     }
 
     private fun insertReminderToDB() : Int{
         var priority: Priority = Priority.NONE
         val reminderText = view?.findViewById<TextView>(R.id.reminderText)?.text.toString()
+        val repeatText =
+            view?.findViewById<AutoCompleteTextView>(R.id.repeatOption)?.text.toString()
 
         when (chipId) {
             R.id.high -> priority = Priority.HIGH
@@ -198,7 +207,7 @@ class AddFragment : Fragment() {
 
             val reminder = Reminder(
                 0, reminderText, priority, Date(dueDate),
-                dueTime, Calendar.getInstance().time, false, requestCode
+                dueTime, Calendar.getInstance().time, false, repeatText, requestCode
             )
             Log.i(LOG_TAG, reminder.toString())
             mSharedViewModel.addReminder(reminder)

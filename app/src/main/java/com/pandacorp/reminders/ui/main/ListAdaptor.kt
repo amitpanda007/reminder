@@ -2,10 +2,13 @@ package com.pandacorp.reminders.ui.main
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.drawable.Icon
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +34,8 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         val reminderText = itemView.findViewById<TextView>(R.id.reminderText)
         val dueDate = itemView.findViewById<TextView>(R.id.dueDate)
         val dueTime = itemView.findViewById<TextView>(R.id.dueTime)
+        val repeatText = itemView.findViewById<TextView>(R.id.repeatText)
+        val repeatImage = itemView.findViewById<ImageButton>(R.id.repeatImageButton)
         val done = itemView.findViewById<RadioButton>(R.id.done)
     }
 
@@ -52,10 +57,16 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
 
 //        holder.reminderId.text = currentReminder.id.toString()
         holder.reminderId.text = (position + 1).toString()
-        holder.reminderText.text = currentReminder.reminderText.toString()
+        holder.reminderText.text = currentReminder.reminderText
         holder.dueDate.text = dueDate.toString()
-        holder.dueTime.text = Common.convertToAMPM(currentReminder.dueTime.toString())
+        holder.dueTime.text = Common.convertToAMPM(currentReminder.dueTime)
+        holder.repeatText.text = currentReminder.repeat
         holder.done.isChecked = currentReminder.isDone
+
+        if(currentReminder.repeat.contentEquals("OFF")) {
+            holder.repeatImage.setColorFilter(R.color.black, PorterDuff.Mode.MULTIPLY)
+        }
+
         if(currentReminder.isDone) {
             Log.i(LOG_TAG, "Setting Text Strike through")
             holder.reminderText.paintFlags = holder.reminderText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -65,9 +76,9 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         }
 
         when (currentReminder.priority.name) {
-            Priority.HIGH.name -> holder.reminderText.setTextColor(Color.parseColor("#D50000"))
-            Priority.MEDIUM.name -> holder.reminderText.setTextColor(Color.parseColor("#0091EA"))
-            Priority.LOW.name -> holder.reminderText.setTextColor(Color.parseColor("#00C853"))
+            Priority.HIGH.name -> holder.reminderText.setTextColor(Color.parseColor("#FFD50000"))
+            Priority.MEDIUM.name -> holder.reminderText.setTextColor(Color.parseColor("#FF0091EA"))
+            Priority.LOW.name -> holder.reminderText.setTextColor(Color.parseColor("#FF00C853"))
             else -> { // Note the block
                 print("Select a Priority")
             }
