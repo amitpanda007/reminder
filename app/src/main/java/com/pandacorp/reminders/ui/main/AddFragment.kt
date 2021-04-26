@@ -158,7 +158,7 @@ class AddFragment : Fragment() {
         val sdf2 = SimpleDateFormat("MMM dd yyyy HH:mm:ss zzz")
         val date: Date = sdf2.parse(dateString)
         val reminderEpoch = date.time
-        Log.i(LOG_TAG, "Reminder Set for $reminderEpoch")
+        Log.i(LOG_TAG, "Trying to Set Reminder for $reminderEpoch")
 
         val repeat = view?.findViewById<AutoCompleteTextView>(R.id.repeatOption)
         val c = Calendar.getInstance()
@@ -176,15 +176,16 @@ class AddFragment : Fragment() {
 
         // Check if alarm date is less than or greater than today's date time
         val currentDateTime = Date().time
-        Log.i(LOG_TAG, "Current Time: $currentDateTime.toString()")
+        Log.i(LOG_TAG, "Current Time: $currentDateTime")
 
-        if(reminderEpoch >= currentDateTime) {
-            if(repeatTime.equals(0)) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
-            }else {
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent);
-            }
+        if(reminderEpoch >= currentDateTime && repeatTime == 0L) {
+            Log.i(LOG_TAG, "Setting a One Time Alarm")
+            alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
+        }else if(repeatTime != 0L){
+            Log.i(LOG_TAG, "Setting a Repeating Alarm")
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent)
         }
+
     }
 
     private fun insertReminderToDB() : Int{

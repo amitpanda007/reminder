@@ -1,5 +1,8 @@
 package com.pandacorp.reminders.ui.util
 
+import android.util.Log
+import com.pandacorp.reminders.LOG_TAG
+
 class Common {
 
     companion object {
@@ -13,10 +16,16 @@ class Common {
             var min = time[1]
             val timeFormat: String
 
-            if(hour > 12) {
+            Log.i(LOG_TAG, "TIME $hour:$min")
+            if(hour == 12) {
+                timeFormat = "PM"
+            } else if(hour > 12) {
                 hour -= 12
                 timeFormat = "PM"
-            }else {
+            } else if (hour == 0) {
+                hour = 12
+                timeFormat = "AM"
+            } else {
                 timeFormat = "AM"
             }
 

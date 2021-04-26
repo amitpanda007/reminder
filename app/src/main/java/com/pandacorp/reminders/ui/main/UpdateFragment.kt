@@ -213,21 +213,12 @@ class UpdateFragment : Fragment() {
         val currentDateTime = Date().time
         Log.i(LOG_TAG, "Current Time: $currentDateTime.toString()")
 
-        if (reminderEpoch >= currentDateTime) {
-            if (repeatTime.equals(0)) {
-                alarmManager.set(
-                    AlarmManager.RTC_WAKEUP,
-                    reminderEpoch,
-                    pendingIntent
-                )
-            } else {
-                alarmManager.setRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    reminderEpoch,
-                    repeatTime,
-                    pendingIntent
-                );
-            }
+        if(reminderEpoch >= currentDateTime && repeatTime == 0L) {
+            Log.i(LOG_TAG, "Setting a One Time Alarm")
+            alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
+        }else if(repeatTime != 0L){
+            Log.i(LOG_TAG, "Setting a Repeating Alarm")
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent);
         }
     }
 
