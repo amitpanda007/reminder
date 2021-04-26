@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_listFragment_to_updateFragment"
             app:destination="@id/updateFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_infoBottomSheet"
+            app:destination="@id/infoBottomSheet" />
     </fragment>
     <fragment
         android:id="@+id/updateFragment"
@@ -38,4 +41,13 @@
             android:id="@+id/action_updateFragment_to_listFragment"
             app:destination="@id/listFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/infoBottomSheet"
+        android:name="com.pandacorp.reminders.ui.main.InfoBottomSheet"
+        android:label="info_bottom_sheet"
+        tools:layout="@layout/info_bottom_sheet" >
+        <action
+            android:id="@+id/action_infoBottomSheet_to_listFragment"
+            app:destination="@id/listFragment" />
+    </dialog>
 </navigation>

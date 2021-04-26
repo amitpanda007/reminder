@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +37,7 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
     private lateinit var allReminders: List<Reminder>
     private lateinit var removedReminder: Reminder
     private lateinit var completedReminder: Reminder
+    private lateinit var animator: DefaultItemAnimator
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +52,13 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         recyclerView.adapter = adaptor
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        animator = DefaultItemAnimator()
+        animator.addDuration = 500
+        animator.removeDuration = 500
+        animator.changeDuration = 500
+        animator.moveDuration = 500
+        recyclerView.itemAnimator = animator
+
         // User View Model
         mSharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         mSharedViewModel.readAllReminder.observe(viewLifecycleOwner, Observer { reminder ->
@@ -56,8 +66,20 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
             allReminders = reminder
         })
 
+        // Clicking Add Reminder Floating Action Button
         view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment, null,
+                navOptions { // Use the Kotlin DSL for building NavOptions
+                    anim {
+                        enter = android.R.animator.fade_in
+                        exit = android.R.animator.fade_out
+                    }
+                })
+        }
+
+        // Clicking Bottom Information Dialog Button
+        view.findViewById<FloatingActionButton>(R.id.infoFloatingButton).setOnClickListener {
+            findNavController().navigate(R.id.action_listFragment_to_infoBottomSheet, null,
                 navOptions { // Use the Kotlin DSL for building NavOptions
                     anim {
                         enter = android.R.animator.fade_in
@@ -160,23 +182,57 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
                     RecyclerViewSwipeDecorator.Builder(
                         c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
                     )
-                        .addBackgroundColor(ContextCompat.getColor(context!!, R.color.delete_background))
+                        .addBackgroundColor(
+                            ContextCompat.getColor(
+                                context!!,
+                                R.color.delete_background
+                            )
+                        )
                         .addActionIcon(R.drawable.ic_delete_24)
                         .create()
                         .decorate()
-                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
                 }else {
                     RecyclerViewSwipeDecorator.Builder(
                         c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
                     )
-                        .addBackgroundColor(ContextCompat.getColor(context!!, R.color.complete_background))
+                        .addBackgroundColor(
+                            ContextCompat.getColor(
+                                context!!,
+                                R.color.complete_background
+                            )
+                        )
                         .addActionIcon(R.drawable.ic_done_outline_24)
                         .create()
                         .decorate()
-                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
                 }
             } else {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
         }
 

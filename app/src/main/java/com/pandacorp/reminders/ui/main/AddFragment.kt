@@ -182,8 +182,14 @@ class AddFragment : Fragment() {
             Log.i(LOG_TAG, "Setting a One Time Alarm")
             alarmManager.set(AlarmManager.RTC_WAKEUP, reminderEpoch, pendingIntent)
         }else if(repeatTime != 0L){
-            Log.i(LOG_TAG, "Setting a Repeating Alarm")
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent)
+            if(repeatTime > AlarmManager.INTERVAL_DAY * 7) {
+                // When repeating alarm is set for monthly or more
+                Log.i(LOG_TAG, "Setting a Monthly Repeating Alarm")
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent)
+            }else {
+                Log.i(LOG_TAG, "Setting a HOURLY/DAILY/WEEKLY Repeating Alarm")
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderEpoch, repeatTime, pendingIntent)
+            }
         }
 
     }
