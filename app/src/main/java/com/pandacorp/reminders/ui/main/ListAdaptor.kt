@@ -124,6 +124,10 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         notifyDataSetChanged()
     }
 
+    fun getReminderCount(): Int {
+        return reminderList.size
+    }
+
     interface OnItemClick{
         fun onClick(reminder: Reminder)
     }

@@ -60,7 +60,9 @@ class AddFragment : Fragment() {
         mSharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         view.findViewById<Button>(R.id.add_btn).setOnClickListener {
             val requestCode = insertReminderToDB()
-            createReminder(requestCode)
+            if (requestCode != 0) {
+                createReminder(requestCode)
+            }
         }
 
         // Date button selection
@@ -144,7 +146,7 @@ class AddFragment : Fragment() {
             context,
             requestCode,
             intent,
-            0
+            PendingIntent.FLAG_CANCEL_CURRENT
         )
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -210,7 +212,7 @@ class AddFragment : Fragment() {
         }
 
         val requestCode = Random.nextInt(0, 1000) * Random.nextInt(0, 1000)
-        if (inputCheck(reminderText)) {
+        if (inputCheck(reminderText, dueDate, dueTime)) {
 
             val reminder = Reminder(
                 0, reminderText, priority, Date(dueDate),
@@ -229,14 +231,15 @@ class AddFragment : Fragment() {
                     }
                 })
         } else {
-            Toast.makeText(requireContext(), "Please provide a proper Reminder", Toast.LENGTH_LONG)
+            Toast.makeText(requireContext(), "Please provide Reminder Text, Date & Time", Toast.LENGTH_LONG)
                 .show()
+            return 0
         }
         return requestCode
     }
 
-    private fun inputCheck(reminderText: String): Boolean {
-        return !TextUtils.isEmpty(reminderText)
+    private fun inputCheck(reminderText: String, dueDate: Long, dueTime: String): Boolean {
+        return !TextUtils.isEmpty(reminderText) && !TextUtils.isEmpty(dueDate.toString()) && !TextUtils.isEmpty(dueTime)
     }
 
 }

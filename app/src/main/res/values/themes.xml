@@ -2,29 +2,29 @@
     <!-- Base application theme. -->
     <style name="Theme.Reminders" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/pink_100</item>
-        <item name="colorPrimaryVariant">@color/pink_900</item>
-<!--        <item name="colorOnPrimary">@color/basil_orange_500</item>-->
+        <item name="colorPrimary">@color/primaryLight</item>
+        <item name="colorPrimaryVariant">@color/primaryDark</item>
+        <!--<item name="colorOnPrimary">@color/basil_orange_500</item>-->
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/pink_50</item>
-        <item name="colorSecondaryVariant">@color/pink_900</item>
-<!--        <item name="colorOnSecondary">@color/basil_orange_500</item>-->
+        <item name="colorSecondary">@color/secondaryDark</item>
+        <!--<item name="colorSecondaryVariant">@color/pink_900</item>-->
+        <!--<item name="colorOnSecondary">@color/basil_orange_500</item>-->
         <!-- Status bar color. -->
-        <item name="toolbarStyle">@style/MyToolbar</item>
+<!--        <item name="toolbarStyle">@style/MyToolbar</item>-->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:textColorPrimary">@color/pink_900</item>
-        <item name="android:textColorSecondary">@color/pink_900</item>
+        <item name="android:textColorPrimary">@color/primaryDark</item>
+        <item name="android:textColorSecondary">@color/primaryLight</item>
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="MyToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="titleTextColor">@color/pink_900</item>
-    </style>
+<!--    <style name="MyToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">-->
+<!--        <item name="titleTextColor">@color/white</item>-->
+<!--    </style>-->
 
     <!-- Style for the navigation drawer icon -->
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">@color/pink_900</item>
+        <item name="color">@color/secondaryDark</item>
     </style>
 </resources>

@@ -5,16 +5,19 @@
 <!--    <color name="basil_green_500">#FF37966F</color>-->
 <!--    <color name="basil_green_100">#FFB9E4C9</color>-->
 <!--    <color name="basil_orange_800">#DF7150</color>-->
-    <color name="basil_orange_500">#FF5722</color>
+<!--    <color name="basil_orange_500">#FF5722</color>-->
 <!--    <color name="basil_orange_50">#FFFFFBE6</color>-->
 
 <!--    Material shrine-->
-<!--    <color name="pink_100">#FFFEDBD0</color>-->
-<!--    <color name="pink_900">#FF442C2E</color>-->
+<!--    <color name="pink_100">#FFF8BBD0</color>-->
+<!--    <color name="pink_900">#FF880E4F</color>-->
+<!--    <color name="pink_50">#FFFEEAE6</color>-->
 
-    <color name="pink_100">#FFF8BBD0</color>
-    <color name="pink_900">#FF880E4F</color>
-    <color name="pink_50">#FFFEEAE6</color>
+<!--    Material Reply-->
+    <color name="primaryLight">#FF4A6572</color>
+    <color name="primaryDark">#FF232F34</color>
+    <color name="secondaryDark">#FFF9AA33</color>
+
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -23,9 +26,7 @@
     <color name="low">#FFB9F6CA</color>
 
     <color name="info_button">#FF0D47A1</color>
-
     <color name="complete_background">#FF69F0AE</color>
     <color name="complete_icon">#FF1B5E20</color>
-
     <color name="delete_background">#FFFF5252</color>
 </resources>

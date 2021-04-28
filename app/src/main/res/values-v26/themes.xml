@@ -2,8 +2,8 @@
 <resources>
 
     <style name="MyToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="titleTextColor">@color/pink_900</item>
-        <item name="navigationIconColor">@color/pink_900</item>
-        <item name="android:iconTint">@color/pink_900</item>
+        <item name="titleTextColor">@color/primaryDark</item>
+        <item name="navigationIconColor">@color/primaryDark</item>
+        <item name="android:iconTint">@color/primaryDark</item>
     </style>
 </resources>

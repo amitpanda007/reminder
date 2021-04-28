@@ -171,7 +171,7 @@ class UpdateFragment : Fragment() {
         intent.putExtra("notificationId", args.currentReminder.intentRequestCode)
 
         // Remove older Pending Intent
-        PendingIntent.getBroadcast(context, args.currentReminder.intentRequestCode, intent, 0)
+        PendingIntent.getBroadcast(context, args.currentReminder.intentRequestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             .cancel()
 
         // Create new Pending Intent to save
@@ -179,7 +179,7 @@ class UpdateFragment : Fragment() {
             context,
             args.currentReminder.intentRequestCode,
             intent,
-            0
+            PendingIntent.FLAG_CANCEL_CURRENT
         )
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -243,7 +243,7 @@ class UpdateFragment : Fragment() {
             }
         }
 
-        if (inputCheck(reminderTextUpdated)) {
+        if (inputCheck(reminderTextUpdated, dueDate, dueTime)) {
 
             val updatedReminder = Reminder(
                 args.currentReminder.id,
@@ -261,14 +261,14 @@ class UpdateFragment : Fragment() {
             Toast.makeText(requireContext(), "Reminder Updated", Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.action_updateFragment_to_listFragment)
         } else {
-            Toast.makeText(requireContext(), "Please provide a proper Reminder", Toast.LENGTH_LONG)
+            Toast.makeText(requireContext(), "Please provide Reminder Text, Date & Time", Toast.LENGTH_LONG)
                 .show()
         }
         updateReminder()
     }
 
-    private fun inputCheck(reminderTextUpdate: String): Boolean {
-        return !TextUtils.isEmpty(reminderTextUpdate)
+    private fun inputCheck(reminderText: String, dueDate: Long, dueTime: String): Boolean {
+        return !TextUtils.isEmpty(reminderText) && !TextUtils.isEmpty(dueDate.toString()) && !TextUtils.isEmpty(dueTime)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

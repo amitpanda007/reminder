@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.pandacorp.reminders.LOG_TAG
@@ -78,7 +79,7 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         }
 
         // Clicking Bottom Information Dialog Button
-        view.findViewById<FloatingActionButton>(R.id.infoFloatingButton).setOnClickListener {
+        view.findViewById<BottomAppBar>(R.id.bottomAppBar).setNavigationOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_infoBottomSheet, null,
                 navOptions { // Use the Kotlin DSL for building NavOptions
                     anim {
@@ -87,6 +88,15 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
                     }
                 })
         }
+        /*view.findViewById<FloatingActionButton>(R.id.infoFloatingButton).setOnClickListener {
+            findNavController().navigate(R.id.action_listFragment_to_infoBottomSheet, null,
+                navOptions { // Use the Kotlin DSL for building NavOptions
+                    anim {
+                        enter = android.R.animator.fade_in
+                        exit = android.R.animator.fade_out
+                    }
+                })
+        }*/
 
         // Add Menu
         setHasOptionsMenu(true)
@@ -248,6 +258,8 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    
 
     private fun deleteAllReminders() {
         val builder = AlertDialog.Builder(requireContext())
