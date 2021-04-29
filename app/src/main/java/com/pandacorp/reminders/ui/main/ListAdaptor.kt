@@ -30,12 +30,12 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
     private lateinit var onItemClick: OnItemClick
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val reminderId = itemView.findViewById<TextView>(R.id.reminderId)
-        val reminderText = itemView.findViewById<TextView>(R.id.reminderText)
-        val dueDate = itemView.findViewById<TextView>(R.id.dueDate)
-        val dueTime = itemView.findViewById<TextView>(R.id.dueTime)
-        val repeatText = itemView.findViewById<TextView>(R.id.repeatText)
-        val repeatImage = itemView.findViewById<ImageButton>(R.id.repeatImageButton)
+        val reminderId: TextView = itemView.findViewById(R.id.reminderId)
+        val reminderText: TextView = itemView.findViewById(R.id.reminderText)
+        val dueDate: TextView = itemView.findViewById(R.id.dueDate)
+        val dueTime: TextView = itemView.findViewById(R.id.dueTime)
+        val repeatText: TextView = itemView.findViewById(R.id.repeatText)
+        val repeatImage: ImageButton = itemView.findViewById(R.id.repeatImageButton)
 //        val done = itemView.findViewById<RadioButton>(R.id.done)
     }
 
@@ -51,7 +51,7 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
         val currentReminder = reminderList[position]
 
         //Format Date
-        val sdf = SimpleDateFormat("dd MMM yy (EEEE)")
+        val sdf = SimpleDateFormat("dd MMM yy (EEE)")
         val netDate = Date(currentReminder.dueDate.time)
         val dueDate = sdf.format(netDate)
 
