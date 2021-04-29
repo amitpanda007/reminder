@@ -74,6 +74,8 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
                     anim {
                         enter = android.R.animator.fade_in
                         exit = android.R.animator.fade_out
+                        popEnter = android.R.animator.fade_in
+                        popExit = android.R.animator.fade_out
                     }
                 })
         }
@@ -85,6 +87,8 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
                     anim {
                         enter = android.R.animator.fade_in
                         exit = android.R.animator.fade_out
+                        popEnter = android.R.animator.fade_in
+                        popExit = android.R.animator.fade_out
                     }
                 })
         }
@@ -125,16 +129,18 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
                 ItemTouchHelper.LEFT -> {
                     removedReminder = adaptor.getData()[position]
                     adaptor.removeReminder(position)
+                    mSharedViewModel.deleteReminder(removedReminder)
 
                     Snackbar.make(
                         recyclerView,
-                        "Reminder temporarily deleted",
+                        "Reminder deleted",
                         Snackbar.LENGTH_LONG
                     )
                         .setAction(
                             "Undo",
                             View.OnClickListener {
                                 adaptor.addReminder(position, removedReminder)
+                                mSharedViewModel.addReminder(removedReminder)
                             }).show()
                 }
                 ItemTouchHelper.RIGHT -> {

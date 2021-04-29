@@ -90,6 +90,8 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
                 anim {
                     enter = android.R.animator.fade_in
                     exit = android.R.animator.fade_out
+                    popEnter = android.R.animator.fade_in
+                    popExit = android.R.animator.fade_out
                 }
             })
         }
