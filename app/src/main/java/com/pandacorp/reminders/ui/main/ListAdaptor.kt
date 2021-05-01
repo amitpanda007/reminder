@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.pandacorp.reminders.LOG_TAG
 import com.pandacorp.reminders.R
@@ -103,9 +104,14 @@ class ListAdaptor: RecyclerView.Adapter<ListAdaptor.MyViewHolder>()
     }
 
     fun setData(reminders: List<Reminder>, onItemClick: OnItemClick) {
+        val reminderDiffUtil = ReminderDiffUtil(reminderList, reminders)
+        val reminderDiffUtilResult = DiffUtil.calculateDiff(reminderDiffUtil)
+
         this.reminderList = reminders as MutableList<Reminder>
         this.onItemClick = onItemClick
-        notifyDataSetChanged()
+
+        reminderDiffUtilResult.dispatchUpdatesTo(this)
+        // notifyDataSetChanged()
     }
 
     fun getData(): List<Reminder> {
