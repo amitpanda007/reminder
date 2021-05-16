@@ -12,12 +12,14 @@ import kotlinx.coroutines.launch
 
 class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     val readAllReminder: LiveData<List<Reminder>>
+    val readAllCompletedReminder: LiveData<List<Reminder>>
     private val repository: ReminderRepository
 
     init {
         val reminderDao = ReminderDatabase.getDatabase(app).reminderDao()
         repository = ReminderRepository(reminderDao)
-        readAllReminder = repository.reminderAllData
+        readAllReminder = repository.reminderData
+        readAllCompletedReminder = repository.completedReminderData
     }
 
     fun addReminder(reminder: Reminder) {

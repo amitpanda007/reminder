@@ -34,8 +34,11 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
 
     private lateinit var mSharedViewModel: SharedViewModel
     private lateinit var recyclerView: RecyclerView
+    private lateinit var completedRecyclerView: RecyclerView
     private lateinit var adaptor: ListAdaptor
+    private lateinit var doneAdaptor: CompletedListAdaptor
     private lateinit var allReminders: List<Reminder>
+    private lateinit var allDoneReminders: List<Reminder>
     private lateinit var removedReminder: Reminder
     private lateinit var completedReminder: Reminder
     private lateinit var animator: DefaultItemAnimator
@@ -53,6 +56,12 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         recyclerView.adapter = adaptor
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        //Completed Recycler View
+        doneAdaptor = CompletedListAdaptor()
+        completedRecyclerView = view.findViewById(R.id.doneRecyclerview)
+        completedRecyclerView.adapter = doneAdaptor
+        completedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
         animator = DefaultItemAnimator()
         animator.addDuration = 500
         animator.removeDuration = 500
@@ -65,6 +74,11 @@ class ListFragment : Fragment(), ListAdaptor.OnItemClick {
         mSharedViewModel.readAllReminder.observe(viewLifecycleOwner, Observer { reminder ->
             adaptor.setData(reminder, this)
             allReminders = reminder
+        })
+
+        mSharedViewModel.readAllCompletedReminder.observe(viewLifecycleOwner, Observer { reminder ->
+            doneAdaptor.setData(reminder)
+            allDoneReminders = reminder
         })
 
         // Clicking Add Reminder Floating Action Button
