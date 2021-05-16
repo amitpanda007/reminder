@@ -20,13 +20,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         createReminderNotification()
-        setupActionBarWithNavController(findNavController(R.id.fragment))
+//        setupActionBarWithNavController(findNavController(R.id.fragment))
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.fragment)
-        return navController.navigateUp() || super.onSupportNavigateUp()
-    }
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.fragment)
+//        return navController.navigateUp() || super.onSupportNavigateUp()
+//    }
 
     private fun createReminderNotification() {
         // Create the NotificationChannel, but only on API 26+ because

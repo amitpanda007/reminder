@@ -6,16 +6,16 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".ui.main.ListFragment">
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/recyclerview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="1.0" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="675dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -23,6 +23,8 @@ tools:context=".ui.main.ListFragment">
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:backgroundTint="@color/primaryLight"
+        app:fabCradleRoundedCornerRadius="20dp"
+        app:fabCradleMargin="10dp"
         app:navigationIcon="@drawable/ic_info_24"
         />
 
